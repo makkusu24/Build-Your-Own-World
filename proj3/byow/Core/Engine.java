@@ -3,11 +3,14 @@ package byow.Core;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 
+import java.util.Arrays;
+
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
+    public static final long DEFAULT_SEED = 04032002; // bounded by long.MAX_VALUE
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -38,15 +41,34 @@ public class Engine {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] interactWithInputString(String input) {
-        // TODO: Fill out this method so that it run the engine using the input
+        // Fill out this method so that it run the engine using the input
         // passed in as an argument, and return a 2D tile representation of the
         // world that would have been drawn if the same inputs had been given
         // to interactWithKeyboard().
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
-
-        TETile[][] finalWorldFrame = null;
-        return finalWorldFrame;
+        char[] parsed = input.toCharArray();
+        if ((parsed[0] == 'n' || parsed[0] == 'N')
+                && (parsed[parsed.length - 1] == 's' || parsed[parsed.length - 1] == 'S')) {
+            long newSeed = Long.parseLong(new String(Arrays.copyOfRange(parsed, 1, parsed.length - 1)));
+            WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, newSeed);
+            TETile[][] finalWorldFrame = initGenerator.getTiles();
+            ter.initialize(WIDTH, HEIGHT);
+            ter.renderFrame(finalWorldFrame);
+            return finalWorldFrame;
+        } else {
+            System.out.println("There is no N or S input indicating the creation of a world");
+            return null;
+        }
     }
+
+    public static void main(String[] args) {
+        TERenderer ter2 = new TERenderer();
+        WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, DEFAULT_SEED);
+        TETile[][] finalWorldFrame = initGenerator.getTiles();
+        ter2.initialize(WIDTH, HEIGHT);
+        ter2.renderFrame(finalWorldFrame);
+    }
+
 }
