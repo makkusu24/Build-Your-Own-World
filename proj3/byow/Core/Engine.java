@@ -2,7 +2,9 @@ package byow.Core;
 
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import edu.princeton.cs.algs4.StdDraw;
 
+import java.awt.*;
 import java.util.Arrays;
 
 public class Engine {
@@ -11,6 +13,7 @@ public class Engine {
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
     public static final long DEFAULT_SEED = 04032002; // bounded by long.MAX_VALUE
+    private boolean menuTurn;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -49,9 +52,15 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
         char[] parsed = input.toCharArray();
-        if ((parsed[0] == 'n' || parsed[0] == 'N')
-                && (parsed[parsed.length - 1] == 's' || parsed[parsed.length - 1] == 'S')) {
-            long newSeed = Long.parseLong(new String(Arrays.copyOfRange(parsed, 1, parsed.length - 1)));
+        int n = 1; // n = 's' after while loop executes
+        String seedExtract = "";
+        startMenu();
+        if ((parsed[0] == 'n' || parsed[0] == 'N')) {
+            while (parsed[n] != 's') {
+                seedExtract = seedExtract + parsed[n];
+                n += 1;
+            }
+            long newSeed = Long.parseLong(seedExtract);
             WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, newSeed);
             TETile[][] finalWorldFrame = initGenerator.getTiles();
             ter.initialize(WIDTH, HEIGHT);
@@ -61,6 +70,47 @@ public class Engine {
             System.out.println("There is no N or S input indicating the creation of a world");
             return null;
         }
+    }
+
+    public void startMenu() {
+        this.menuTurn = true;
+        String typedString = "";
+        int counter = 0;
+        while (menuTurn) {
+            drawFrame("START");
+            if (counter >= 5) {
+                menuTurn = false;
+            }
+            if (StdDraw.hasNextKeyTyped()) { //change to keyboard inputs N/L/Q instead of indiscriminate counter
+                Character currentChar = StdDraw.nextKeyTyped();
+                typedString = typedString + currentChar;
+                StdDraw.clear(Color.BLACK);
+                drawFrame(typedString);
+                counter += 1;
+            }
+        }
+    }
+
+    public void drawFrame(String s) {
+        /* Take the input string S and display it at the center of the screen,
+         * with the pen settings given below. */
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+        Font fontBig = new Font("Monaco", Font.BOLD, 30);
+        StdDraw.setFont(fontBig);
+        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2, s);
+
+        /* If the game is not over, display encouragement, and let the user know if they
+         * should be typing their answer or watching for the next round. */
+        if (menuTurn) {
+            Font fontSmall = new Font("Monaco", Font.BOLD, 20);
+            StdDraw.setFont(fontSmall);
+            StdDraw.line(0, this.HEIGHT - 2, this.WIDTH, this.HEIGHT - 2);
+            StdDraw.textLeft(0, this.HEIGHT - 1, "61B Sp'23";
+            StdDraw.text(this.WIDTH / 2, this.HEIGHT - 1, "SCUFFED UNDERTALE"); // or menu
+            StdDraw.textRight(this.WIDTH, this.HEIGHT - 1, "By: Max Boston");
+        }
+        StdDraw.show();
     }
 
     public static void main(String[] args) {
