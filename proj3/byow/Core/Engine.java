@@ -14,6 +14,7 @@ public class Engine {
     public static final int HEIGHT = 30;
     public static final long DEFAULT_SEED = 04032002; // bounded by long.MAX_VALUE
     private boolean menuTurn;
+    private boolean gameRun;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -55,7 +56,7 @@ public class Engine {
         int n = 1; // n = 's' after while loop executes
         String seedExtract = "";
         startMenu();
-        if ((parsed[0] == 'n' || parsed[0] == 'N')) {
+        if (gameRun && (parsed[0] == 'n' || parsed[0] == 'N')) {
             while (parsed[n] != 's') {
                 seedExtract = seedExtract + parsed[n];
                 n += 1;
@@ -66,13 +67,16 @@ public class Engine {
             ter.initialize(WIDTH, HEIGHT);
             ter.renderFrame(finalWorldFrame);
             return finalWorldFrame;
-        } else {
+        } else if (gameRun) { //TODO: track gameRun boolean
             System.out.println("There is no N or S input indicating the creation of a world");
+            return null;
+        } else {
+            StdDraw.clear();
             return null;
         }
     }
 
-    public void startMenu() {
+    public void startMenu() { //TODO: can only handle keyboard interaction --> implement interactWithString()
         StdDraw.setCanvasSize(this.WIDTH * 16, this.HEIGHT * 16);
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
@@ -82,42 +86,42 @@ public class Engine {
         StdDraw.enableDoubleBuffering();
         //baseline STDDraw setup
         this.menuTurn = true;
-        String typedString = "";
-        int counter = 0;
+        this.gameRun = true;
         while (menuTurn) {
-            drawFrame("CREATE WORLD (N)", 10);
-            drawFrame("Load World (L)", 0);
-            drawFrame("Quit (Q)", -10);
-            if (counter >= 5) {
-                menuTurn = false;
-            }
-            if (StdDraw.hasNextKeyTyped()) { //change to keyboard inputs N/L/Q instead of indiscriminate counter
+            drawMenu();
+            if (StdDraw.hasNextKeyTyped()) {
                 Character currentChar = StdDraw.nextKeyTyped();
-                typedString = typedString + currentChar;
-                StdDraw.clear(Color.BLACK);
-                drawFrame(typedString, 0);
-                counter += 1;
+                if (currentChar == 'n' || currentChar == 'N') {
+                    this.menuTurn = false;
+                    //New World
+                } else if (currentChar == 'l' || currentChar == 'L') {
+                    this.menuTurn = false;
+                    System.out.println("save states not supported yet");
+                    //TODO: implement save state; if no state, just quit UI
+                } else if (currentChar == 'q' || currentChar == 'Q') {
+                    this.menuTurn = false;
+                    StdDraw.clear();
+                    this.gameRun = false;
+                }
             }
         }
     }
 
-    public void drawFrame(String s, int yAdjust) {
-        /* Take the input string S and display it at the center of the screen,
-         * with the pen settings given below. */
+    public void drawMenu() {
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(fontBig);
-        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2 + yAdjust, s);
+        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2 + 10, "Create World (N)");
+        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2, "Load World (L)");
+        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2 - 10, "Quit (Q)");
 
-        /* If the game is not over, display encouragement, and let the user know if they
-         * should be typing their answer or watching for the next round. */
         if (menuTurn) {
             Font fontSmall = new Font("Monaco", Font.BOLD, 20);
             StdDraw.setFont(fontSmall);
             StdDraw.line(0, this.HEIGHT - 2, this.WIDTH, this.HEIGHT - 2);
             StdDraw.textLeft(0, this.HEIGHT - 1, "61B Sp'23");
-            StdDraw.text(this.WIDTH / 2, this.HEIGHT - 1, "SCUFFED UNDERTALE"); // or menu
+            StdDraw.text(this.WIDTH / 2, this.HEIGHT - 1, "SCUFFED UNDERTALE");
             StdDraw.textRight(this.WIDTH, this.HEIGHT - 1, "By: Max Boston");
         }
         StdDraw.show();
@@ -125,7 +129,7 @@ public class Engine {
 
     public static void main(String[] args) {
         Engine engine = new Engine();
-        engine.interactWithInputString("n1234s");
+        engine.interactWithInputString("n04032002s");
     }
 
 }
