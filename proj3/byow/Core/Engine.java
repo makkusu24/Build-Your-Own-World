@@ -73,6 +73,14 @@ public class Engine {
     }
 
     public void startMenu() {
+        StdDraw.setCanvasSize(this.WIDTH * 16, this.HEIGHT * 16);
+        Font font = new Font("Monaco", Font.BOLD, 30);
+        StdDraw.setFont(font);
+        StdDraw.setXscale(0, this.WIDTH);
+        StdDraw.setYscale(0, this.HEIGHT);
+        StdDraw.clear(Color.BLACK);
+        StdDraw.enableDoubleBuffering();
+        //baseline STDDraw setup
         this.menuTurn = true;
         String typedString = "";
         int counter = 0;
@@ -106,7 +114,7 @@ public class Engine {
             Font fontSmall = new Font("Monaco", Font.BOLD, 20);
             StdDraw.setFont(fontSmall);
             StdDraw.line(0, this.HEIGHT - 2, this.WIDTH, this.HEIGHT - 2);
-            StdDraw.textLeft(0, this.HEIGHT - 1, "61B Sp'23";
+            StdDraw.textLeft(0, this.HEIGHT - 1, "61B Sp'23");
             StdDraw.text(this.WIDTH / 2, this.HEIGHT - 1, "SCUFFED UNDERTALE"); // or menu
             StdDraw.textRight(this.WIDTH, this.HEIGHT - 1, "By: Max Boston");
         }
@@ -114,11 +122,8 @@ public class Engine {
     }
 
     public static void main(String[] args) {
-        TERenderer ter2 = new TERenderer();
-        WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, DEFAULT_SEED);
-        TETile[][] finalWorldFrame = initGenerator.getTiles();
-        ter2.initialize(WIDTH, HEIGHT);
-        ter2.renderFrame(finalWorldFrame);
+        Engine engine = new Engine();
+        engine.interactWithInputString("n1234s");
     }
 
 }
