@@ -85,7 +85,9 @@ public class Engine {
         String typedString = "";
         int counter = 0;
         while (menuTurn) {
-            drawFrame("START");
+            drawFrame("CREATE WORLD (N)", 10);
+            drawFrame("Load World (L)", 0);
+            drawFrame("Quit (Q)", -10);
             if (counter >= 5) {
                 menuTurn = false;
             }
@@ -93,20 +95,20 @@ public class Engine {
                 Character currentChar = StdDraw.nextKeyTyped();
                 typedString = typedString + currentChar;
                 StdDraw.clear(Color.BLACK);
-                drawFrame(typedString);
+                drawFrame(typedString, 0);
                 counter += 1;
             }
         }
     }
 
-    public void drawFrame(String s) {
+    public void drawFrame(String s, int yAdjust) {
         /* Take the input string S and display it at the center of the screen,
          * with the pen settings given below. */
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(fontBig);
-        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2, s);
+        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2 + yAdjust, s);
 
         /* If the game is not over, display encouragement, and let the user know if they
          * should be typing their answer or watching for the next round. */
