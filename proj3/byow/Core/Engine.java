@@ -9,8 +9,6 @@ import byow.TileEngine.Tileset;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static java.lang.Character.isDigit;
 
@@ -240,7 +238,7 @@ public class Engine {
     }
 
     /**
-     * @source Chat GPT
+     * @source Chat GPT provided the if satement at the bottom
      * This helper method handles avatar movement.
      * @param direction given either by string input or realtime keyboard input.
      */
@@ -265,6 +263,8 @@ public class Engine {
             case 'D':
                 newX += 1;
                 break;
+            default: //completes style
+                break;
         }
 
         if (state[newX][newY] == Tileset.FLOOR) {
@@ -280,6 +280,8 @@ public class Engine {
 
     /**
      * Method for interacting with mouse hovering to display tile names.
+     * @source ChatGPT provided formatting for the text
+     * to be at the top of the screen while the world is also displayed.
      * @param tile gives us text that stays fixed above the game world as an HUD.
      */
     public void renderHUD(TETile tile) {
