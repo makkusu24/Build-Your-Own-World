@@ -169,25 +169,21 @@ public class Engine {
      */
     public TETile[][] startGame() { //TODO: collect movement inputs while in game
         String newSeed = "";
-        System.out.println("startGame() has been called");
-
-        // Draw seed prompt
         StdDraw.setPenColor(Color.WHITE);
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
         StdDraw.text(this.WIDTH / 2 + 3, this.HEIGHT / 2 + 3, "Enter seed:");
         StdDraw.show();
-
         while (this.inputSource.possibleNextInput()) {
             char c = this.inputSource.getNextKey();
-            if (c == 's') {
+            if (c == 's' || c == 'S' || newSeed.length() > 9) { // seed can't exceed 10 digits
+                System.out.println(newSeed);
                 WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, Long.parseLong(newSeed));
                 TETile[][] finalWorldFrame = initGenerator.getTiles();
                 return finalWorldFrame;
-            } else if (Character.isDigit(c)) {
+            } else if (isDigit(c)) {
+                System.out.println(c);
                 newSeed = newSeed + c;
-
-                // Update the seed display
                 StdDraw.setPenColor(Color.BLACK);
                 StdDraw.filledRectangle(this.WIDTH / 2, this.HEIGHT / 2 - 5, 50, 5);
                 StdDraw.setPenColor(Color.WHITE);
