@@ -1,26 +1,35 @@
 package byow.Core;
 
+import byow.InputDemo.InputSource;
+import byow.InputDemo.KeyboardInputSource;
+import byow.InputDemo.StringInputDevice;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+
+import static java.lang.Character.isDigit;
 
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
-    public static final long DEFAULT_SEED = 04032002; // bounded by long.MAX_VALUE
+    private String playerInputs; //TODO: load from .txt file
+    private TETile[][] state;
+    InputSource inputSource;
     private boolean menuTurn;
-    private boolean gameRun;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
+        this.inputSource = new KeyboardInputSource();
+        startMenu();
     }
 
     /**
@@ -52,11 +61,14 @@ public class Engine {
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
+        this.inputSource = new StringInputDevice(input);
+        processInputString();
+        return this.state;
+        /*
         char[] parsed = input.toCharArray();
-        int n = 1; // n = 's' after while loop executes
+        int n = 1;
         String seedExtract = "";
-        startMenu();
-        if (gameRun && (parsed[0] == 'n' || parsed[0] == 'N')) {
+        if (parsed[0] == 'n' || parsed[0] == 'N') {
             while (parsed[n] != 's') {
                 seedExtract = seedExtract + parsed[n];
                 n += 1;
@@ -67,16 +79,21 @@ public class Engine {
             ter.initialize(WIDTH, HEIGHT);
             ter.renderFrame(finalWorldFrame);
             return finalWorldFrame;
-        } else if (gameRun) { //TODO: track gameRun boolean
-            System.out.println("There is no N or S input indicating the creation of a world");
-            return null;
         } else {
-            StdDraw.clear();
+            StdDraw.clear(Color.BLACK);
+            StdDraw.show();
             return null;
         }
+         */
     }
 
-    public void startMenu() { //TODO: can only handle keyboard interaction --> implement interactWithString()
+    /**
+     * startMenu provides an interface for interactWithKeyboard():
+     * 'n' starts a new world -> prompt user to enter seed
+     * 'l' loads previous save
+     * 'q' quits
+     */
+    public void startMenu() {
         StdDraw.setCanvasSize(this.WIDTH * 16, this.HEIGHT * 16);
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
@@ -85,28 +102,32 @@ public class Engine {
         StdDraw.clear(Color.BLACK);
         StdDraw.enableDoubleBuffering();
         //baseline STDDraw setup
+        drawMenu();
         this.menuTurn = true;
-        this.gameRun = true;
         while (menuTurn) {
+            char c = this.inputSource.getNextKey();
+            //this.playerInputs = this.playerInputs + c;
             drawMenu();
-            if (StdDraw.hasNextKeyTyped()) {
-                Character currentChar = StdDraw.nextKeyTyped();
-                if (currentChar == 'n' || currentChar == 'N') {
-                    this.menuTurn = false;
-                    //New World
-                } else if (currentChar == 'l' || currentChar == 'L') {
-                    this.menuTurn = false;
-                    System.out.println("save states not supported yet");
-                    //TODO: implement save state; if no state, just quit UI
-                } else if (currentChar == 'q' || currentChar == 'Q') {
-                    this.menuTurn = false;
-                    StdDraw.clear();
-                    this.gameRun = false;
-                }
+            if (c == 'n' || c == 'N') {
+                this.menuTurn = false;
+                StdDraw.clear(Color.BLACK);
+                StdDraw.show();
+                TETile[][] loadWorld = startGame();
+                loadGame(loadWorld);
+            } else if (c == 'l' || c == 'L') {
+                this.menuTurn = false;
+                loadGame(interactWithInputString(playerInputs)); //TODO: load .txt file
+            } else if (c == 'q' || c == 'Q') {
+                this.menuTurn = false;
+                StdDraw.clear(Color.BLACK);
+                StdDraw.show();
             }
         }
     }
 
+    /**
+     * drawMenu() draws the menu interface for the options in startMenu()
+     */
     public void drawMenu() {
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
@@ -127,9 +148,73 @@ public class Engine {
         StdDraw.show();
     }
 
+    /**
+     * This method is exclusively for interactWithInputString() because a visible menu is not necessary.
+     * If the beginning of the string has 'n' -> new world creation
+     * If the beginning of the string has 'l' -> continue from previous save
+     */
+    public void processInputString() {
+        char c = this.inputSource.getNextKey();
+        if (c == 'n' || c == 'N') {
+            TETile[][] loadWorld = startGame();
+            loadGame(loadWorld);
+        } else if (c == 'l' || c == 'L') {
+            loadGame(interactWithInputString(playerInputs));
+        }
+    }
+
+    /**
+     * This method is for both keyboard and string interaction, and prepares a world to load in loadGame().
+     * @return TETile[][] randomly generated world.
+     */
+    public TETile[][] startGame() { //TODO: collect movement inputs while in game
+        String newSeed = "";
+        System.out.println("startGame() has been called");
+
+        // Draw seed prompt
+        StdDraw.setPenColor(Color.WHITE);
+        Font font = new Font("Monaco", Font.BOLD, 30);
+        StdDraw.setFont(font);
+        StdDraw.text(this.WIDTH / 2 + 3, this.HEIGHT / 2 + 3, "Enter seed:");
+        StdDraw.show();
+
+        while (this.inputSource.possibleNextInput()) {
+            char c = this.inputSource.getNextKey();
+            if (c == 's') {
+                WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, Long.parseLong(newSeed));
+                TETile[][] finalWorldFrame = initGenerator.getTiles();
+                return finalWorldFrame;
+            } else if (Character.isDigit(c)) {
+                newSeed = newSeed + c;
+
+                // Update the seed display
+                StdDraw.setPenColor(Color.BLACK);
+                StdDraw.filledRectangle(this.WIDTH / 2, this.HEIGHT / 2 - 5, 50, 5);
+                StdDraw.setPenColor(Color.WHITE);
+                StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2 - 5, newSeed);
+                StdDraw.show();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Renders and initializes the world fed as an input
+     * @param worldState created from startGame()
+     */
+    public void loadGame(TETile[][] worldState) {
+        this.state = worldState;
+        ter.initialize(WIDTH, HEIGHT);
+        ter.renderFrame(worldState);
+    }
+
+    /**
+     * Main method for debugging between interactWithInputString() and interactWithKeyboard()
+     */
     public static void main(String[] args) {
         Engine engine = new Engine();
-        engine.interactWithInputString("n04032002s");
+        //engine.interactWithInputString("n1s");
+        engine.interactWithKeyboard();
     }
 
 }
