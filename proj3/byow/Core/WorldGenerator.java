@@ -132,47 +132,36 @@ public class WorldGenerator {
         int startY = Math.min(y1, y2);
         int endY = Math.max(y1, y2);
 
-        // Create the horizontal part of the L-shaped hallway
+        // Randomly choose whether to start with horizontal or vertical hallway
+        if (seed.nextBoolean()) {
+            createHorizontalHallway(startX, endX, y1);
+            createVerticalHallway(startY, endY, x2);
+        } else {
+            createVerticalHallway(startY, endY, x1);
+            createHorizontalHallway(startX, endX, y2);
+        }
+    }
+
+    private void createHorizontalHallway(int startX, int endX, int y) {
         for (int x = startX; x <= endX; x++) {
-            if (tiles[x][y1] == Tileset.WALL || tiles[x][y1] == Tileset.NOTHING) {
-                tiles[x][y1] = Tileset.FLOOR;
+            tiles[x][y] = Tileset.FLOOR;
+            if (tiles[x][y - 1] == Tileset.NOTHING) {
+                tiles[x][y - 1] = Engine.flowerDimension ? Tileset.FLOWER : Tileset.WALL;
             }
-            if (tiles[x][y1] == Tileset.FLOWER || tiles[x][y1] == Tileset.NOTHING) {
-                tiles[x][y1] = Tileset.FLOOR;
-            }
-            if (tiles[x][y1 - 1] == Tileset.NOTHING && !Engine.flowerDimension) {
-                tiles[x][y1 - 1] = Tileset.WALL;
-            }
-            if (tiles[x][y1 - 1] == Tileset.NOTHING && Engine.flowerDimension) {
-                tiles[x][y1 - 1] = Tileset.FLOWER;
-            }
-            if (tiles[x][y1 + 1] == Tileset.NOTHING && !Engine.flowerDimension) {
-                tiles[x][y1 + 1] = Tileset.WALL;
-            }
-            if (tiles[x][y1 + 1] == Tileset.NOTHING && Engine.flowerDimension) {
-                tiles[x][y1 + 1] = Tileset.FLOWER;
+            if (tiles[x][y + 1] == Tileset.NOTHING) {
+                tiles[x][y + 1] = Engine.flowerDimension ? Tileset.FLOWER : Tileset.WALL;
             }
         }
+    }
 
-        // Create the vertical part of the L-shaped hallway
+    private void createVerticalHallway(int startY, int endY, int x) {
         for (int y = startY; y <= endY; y++) {
-            if (tiles[x2][y] == Tileset.WALL || tiles[x2][y] == Tileset.NOTHING) {
-                tiles[x2][y] = Tileset.FLOOR;
+            tiles[x][y] = Tileset.FLOOR;
+            if (tiles[x - 1][y] == Tileset.NOTHING) {
+                tiles[x - 1][y] = Engine.flowerDimension ? Tileset.FLOWER : Tileset.WALL;
             }
-            if (tiles[x2][y] == Tileset.FLOWER || tiles[x2][y] == Tileset.NOTHING) {
-                tiles[x2][y] = Tileset.FLOOR;
-            }
-            if (tiles[x2 - 1][y] == Tileset.NOTHING && !Engine.flowerDimension) {
-                tiles[x2 - 1][y] = Tileset.WALL;
-            }
-            if (tiles[x2 - 1][y] == Tileset.NOTHING && Engine.flowerDimension) {
-                tiles[x2 - 1][y] = Tileset.FLOWER;
-            }
-            if (tiles[x2 + 1][y] == Tileset.NOTHING && !Engine.flowerDimension) {
-                tiles[x2 + 1][y] = Tileset.WALL;
-            }
-            if (tiles[x2 + 1][y] == Tileset.NOTHING && Engine.flowerDimension) {
-                tiles[x2 + 1][y] = Tileset.FLOWER;
+            if (tiles[x + 1][y] == Tileset.NOTHING) {
+                tiles[x + 1][y] = Engine.flowerDimension ? Tileset.FLOWER : Tileset.WALL;
             }
         }
     }
