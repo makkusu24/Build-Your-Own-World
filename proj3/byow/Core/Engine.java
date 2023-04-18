@@ -20,12 +20,12 @@ public class Engine {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
-    private String playerInputs; //TODO: load from .txt file
+    private String playerInputs;
     private Point avatarPosition;
     private TETile[][] state;
     InputSource inputSource;
     private boolean menuTurn;
-    public static boolean flowerDimension = false;
+    static boolean flowerDimension = false;
     private boolean lineOfSightActive = false;
     private StringBuilder inputBuilder;
 
@@ -111,7 +111,7 @@ public class Engine {
                     if (inputSource.possibleNextInput()) {
                         if (lineOfSightActive) {
                             HashSet<Point> visibleTiles = getVisibleTiles(avatarPosition, 5);
-                            renderLineOfSight(loadWorld, avatarPosition, visibleTiles);
+                            renderLineOfSight(loadWorld, visibleTiles);
                         } else {
                             ter.renderFrame(loadWorld);
                         }
@@ -122,9 +122,10 @@ public class Engine {
                             if (inputSource.possibleNextInput()) {
                                 char nextChar = inputSource.getNextKey();
                                 if (nextChar == 'q' || nextChar == 'Q') {
+                                    saveGameState(inputBuilder.toString());
                                     StdDraw.clear(Color.BLACK);
                                     StdDraw.show();
-                                    break; //TODO: save then quit
+                                    break;
                                 }
                             }
                         }
@@ -210,7 +211,7 @@ public class Engine {
      * This method is for both keyboard and string interaction, and prepares a world to load in loadGame().
      * @return TETile[][] randomly generated world.
      */
-    public TETile[][] startGame() { //TODO: collect movement inputs while in game
+    public TETile[][] startGame() {
         String newSeed = "";
         StdDraw.setPenColor(Color.WHITE);
         Font font = new Font("Monaco", Font.BOLD, 30);
@@ -358,6 +359,10 @@ public class Engine {
         return state[mouseX][mouseY];
     }
 
+    /**
+     * Aggregates all player movement and the world seed into a .txt save file.
+     * @param input indexed player inputs from either keyboard or string.
+     */
     private void saveGameState(String input) {
         String saveFilePath = "save-file.txt";
         File saveFile = new File(saveFilePath);
@@ -370,8 +375,9 @@ public class Engine {
     }
 
     /**
+     * Works in tandem with saveGameState() to let players continue where they left off from.
      * @source ChatGPT wrote the code for throwing an exception if there is no save file.
-     * @return
+     * @return previously saved player movement from .txt file as a string.
      */
     private String loadGameState() {
         String saveFilePath = "save-file.txt";
@@ -392,14 +398,20 @@ public class Engine {
         return gameState.toString();
     }
 
-    public HashSet<Point> getVisibleTiles(Point avatarPosition, int radius) {
+    /**
+     * This function is called constantly to stay up to date with the player's position.
+     * @param avatarP uses the current coordinate of the avatar to draw line of sight.
+     * @param radius the length of the longest vertices of the diamond.
+     * @return HashSet containing the tiles that should be rendered.
+     */
+    public HashSet<Point> getVisibleTiles(Point avatarP, int radius) {
         HashSet<Point> visibleTiles = new HashSet<>();
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
                 int distance = Math.abs(x) + Math.abs(y);
                 if (distance <= radius) {
-                    int tileX = avatarPosition.getX() + x;
-                    int tileY = avatarPosition.getY() + y;
+                    int tileX = avatarP.getX() + x;
+                    int tileY = avatarP.getY() + y;
                     if (tileX >= 0 && tileX < WIDTH && tileY >= 0 && tileY < HEIGHT) {
                         visibleTiles.add(new Point(tileX, tileY));
                     }
@@ -409,7 +421,14 @@ public class Engine {
         return visibleTiles;
     }
 
-    private void renderLineOfSight(TETile[][] world, Point avatarPosition, HashSet<Point> visibleTiles) {
+    /**
+     * This method takes what's given from getVisibleTiles() and changes the framing of the world accordingly.
+     * There is no parameter for radius because that was already determined in getVisibleTiles().
+     * @source Chat-GPT
+     * @param world the current world state of the game that's running.
+     * @param visibleTiles the HashSet of coordinates for tiles within the line of sight.
+     */
+    private void renderLineOfSight(TETile[][] world, HashSet<Point> visibleTiles) {
         TETile[][] maskedTiles = new TETile[world.length][world[0].length];
         for (int x = 0; x < maskedTiles.length; x++) {
             for (int y = 0; y < maskedTiles[0].length; y++) {
