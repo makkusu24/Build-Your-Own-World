@@ -24,6 +24,7 @@ public class Engine {
     private TETile[][] state;
     InputSource inputSource;
     private boolean menuTurn;
+    public static boolean flowerDimension;
     private StringBuilder inputBuilder;
 
     /**
@@ -185,7 +186,11 @@ public class Engine {
                 moveAvatar(c2);
             }
         } else if (c == 'l' || c == 'L') {
-            loadGame(interactWithInputString(playerInputs));
+            String loadedInput = loadGameState();
+            if (!loadedInput.isEmpty()) {
+                this.playerInputs = loadedInput;
+                loadGame(interactWithInputString(loadedInput));
+            }
         }
     }
 
@@ -203,6 +208,22 @@ public class Engine {
         while (this.inputSource.possibleNextInput()) {
             char c = this.inputSource.getNextKey();
             if (c == 's' || c == 'S' || newSeed.length() > 9) { // seed can't exceed 10 digits
+                StdDraw.clear(Color.BLACK);
+                StdDraw.setPenColor(Color.WHITE);
+                Font font2 = new Font("Monaco", Font.BOLD, 30);
+                StdDraw.setFont(font2);
+                StdDraw.text(this.WIDTH / 2 + 3, this.HEIGHT / 2 + 3, "(E) for flower biome, (S) for default biome");
+                StdDraw.show();
+                while (this.inputSource.possibleNextInput()) {
+                    char c2 = this.inputSource.getNextKey();
+                    if (c2 == 'e' || c2 == 'E') {
+                        this.flowerDimension = true;
+                        break;
+                    } else if (c2 == 's' || c2 == 'S') {
+                        this.flowerDimension = false;
+                        break;
+                    }
+                }
                 WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, Long.parseLong(newSeed));
                 TETile[][] finalWorldFrame = initGenerator.getTiles();
                 return finalWorldFrame;
@@ -212,7 +233,7 @@ public class Engine {
                 StdDraw.setPenColor(Color.BLACK);
                 StdDraw.filledRectangle(this.WIDTH / 2, this.HEIGHT / 2 - 5, 50, 5);
                 StdDraw.setPenColor(Color.WHITE);
-                StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2 - 5, newSeed);
+                StdDraw.text(this.WIDTH / 2 + 3, this.HEIGHT / 2 - 5, newSeed);
                 StdDraw.show();
             }
         }
@@ -343,17 +364,14 @@ public class Engine {
         String saveFilePath = "save-file.txt";
         File saveFile = new File(saveFilePath);
         if (!saveFile.exists()) {
-            System.out.println("No save file found. Quitting.");
-            StdDraw.clear(Color.BLACK);
-            StdDraw.show();
+            System.out.println("No save file found.");
             return "";
         }
-        StringBuilder gameState = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader("save-file.txt"))) {
-            gameState = new StringBuilder();
-            int c;
-            while ((c = reader.read()) != -1) {
-                gameState.append((char) c);
+        StringBuilder gameState = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(saveFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                gameState.append(line);
             }
         } catch (IOException e) {
             e.printStackTrace();

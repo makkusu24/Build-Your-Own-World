@@ -92,8 +92,12 @@ public class WorldGenerator {
     private void createRoom(int x, int y, int width, int height) {
         for (int i = x; i < x + width; i++) {
             for (int j = y; j < y + height; j++) {
-                if (i == x || i == x + width - 1 || j == y || j == y + height - 1) {
-                    tiles[i][j] = Tileset.WALL;
+                if ((i == x || i == x + width - 1 || j == y || j == y + height - 1)) {
+                    if (!Engine.flowerDimension) {
+                        tiles[i][j] = Tileset.WALL;
+                    } else {
+                        tiles[i][j] = Tileset.FLOWER;
+                    }
                 } else {
                     tiles[i][j] = Tileset.FLOOR;
                 }
@@ -133,11 +137,20 @@ public class WorldGenerator {
             if (tiles[x][y1] == Tileset.WALL || tiles[x][y1] == Tileset.NOTHING) {
                 tiles[x][y1] = Tileset.FLOOR;
             }
-            if (tiles[x][y1 - 1] == Tileset.NOTHING) {
+            if (tiles[x][y1] == Tileset.FLOWER || tiles[x][y1] == Tileset.NOTHING) {
+                tiles[x][y1] = Tileset.FLOOR;
+            }
+            if (tiles[x][y1 - 1] == Tileset.NOTHING && !Engine.flowerDimension) {
                 tiles[x][y1 - 1] = Tileset.WALL;
             }
-            if (tiles[x][y1 + 1] == Tileset.NOTHING) {
+            if (tiles[x][y1 - 1] == Tileset.NOTHING && Engine.flowerDimension) {
+                tiles[x][y1 - 1] = Tileset.FLOWER;
+            }
+            if (tiles[x][y1 + 1] == Tileset.NOTHING && !Engine.flowerDimension) {
                 tiles[x][y1 + 1] = Tileset.WALL;
+            }
+            if (tiles[x][y1 + 1] == Tileset.NOTHING && Engine.flowerDimension) {
+                tiles[x][y1 + 1] = Tileset.FLOWER;
             }
         }
 
@@ -146,11 +159,20 @@ public class WorldGenerator {
             if (tiles[x2][y] == Tileset.WALL || tiles[x2][y] == Tileset.NOTHING) {
                 tiles[x2][y] = Tileset.FLOOR;
             }
-            if (tiles[x2 - 1][y] == Tileset.NOTHING) {
+            if (tiles[x2][y] == Tileset.FLOWER || tiles[x2][y] == Tileset.NOTHING) {
+                tiles[x2][y] = Tileset.FLOOR;
+            }
+            if (tiles[x2 - 1][y] == Tileset.NOTHING && !Engine.flowerDimension) {
                 tiles[x2 - 1][y] = Tileset.WALL;
             }
-            if (tiles[x2 + 1][y] == Tileset.NOTHING) {
+            if (tiles[x2 - 1][y] == Tileset.NOTHING && Engine.flowerDimension) {
+                tiles[x2 - 1][y] = Tileset.FLOWER;
+            }
+            if (tiles[x2 + 1][y] == Tileset.NOTHING && !Engine.flowerDimension) {
                 tiles[x2 + 1][y] = Tileset.WALL;
+            }
+            if (tiles[x2 + 1][y] == Tileset.NOTHING && Engine.flowerDimension) {
+                tiles[x2 + 1][y] = Tileset.FLOWER;
             }
         }
     }
