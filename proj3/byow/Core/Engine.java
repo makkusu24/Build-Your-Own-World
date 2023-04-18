@@ -24,7 +24,7 @@ public class Engine {
     private TETile[][] state;
     InputSource inputSource;
     private boolean menuTurn;
-    public static boolean flowerDimension;
+    public static boolean flowerDimension = false;
     private StringBuilder inputBuilder;
 
     /**
