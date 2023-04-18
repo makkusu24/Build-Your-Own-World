@@ -8,6 +8,8 @@ import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.algs4.StdDraw;
 
+import java.io.*;
+
 import java.awt.*;
 
 import static java.lang.Character.isDigit;
@@ -22,6 +24,7 @@ public class Engine {
     private TETile[][] state;
     InputSource inputSource;
     private boolean menuTurn;
+    private StringBuilder inputBuilder;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -29,6 +32,7 @@ public class Engine {
      */
     public void interactWithKeyboard() {
         this.inputSource = new KeyboardInputSource();
+        this.inputBuilder = new StringBuilder();
         startMenu();
     }
 
@@ -62,8 +66,10 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
         this.inputSource = new StringInputDevice(input);
+        this.inputBuilder = new StringBuilder();
         processInputString();
-        return this.state;
+        //return this.state;
+        return null;
     }
 
     /**
@@ -101,7 +107,7 @@ public class Engine {
                         renderHUD(currentTile);
                     }
                     if (inputSource.possibleNextInput()) {
-                        char c2 = inputSource.getNextKey(); //TODO: save and quit
+                        char c2 = inputSource.getNextKey();
                         if (c2 == ':') {
                             if (inputSource.possibleNextInput()) {
                                 char nextChar = inputSource.getNextKey();
@@ -118,7 +124,10 @@ public class Engine {
 
             } else if (c == 'l' || c == 'L') {
                 this.menuTurn = false;
-                loadGame(interactWithInputString(playerInputs)); //TODO: load .txt file
+                String loadedInput = loadGameState();
+                if (!loadedInput.isEmpty()) {
+                    loadGame(interactWithInputString(loadedInput));
+                }
             } else if (c == 'q' || c == 'Q') {
                 this.menuTurn = false;
                 StdDraw.clear(Color.BLACK);
@@ -157,16 +166,19 @@ public class Engine {
      */
     public void processInputString() {
         char c = this.inputSource.getNextKey();
+        inputBuilder.append(c);
         if (c == 'n' || c == 'N') {
             TETile[][] loadWorld = startGame();
             loadGame(loadWorld);
             while (inputSource.possibleNextInput()) {
                 char c2 = inputSource.getNextKey();
+                inputBuilder.append(c2);
                 if (c2 == ':') {
                     if (inputSource.possibleNextInput()) {
                         char nextChar = inputSource.getNextKey();
                         if (nextChar == 'q' || nextChar == 'Q') {
-                            break; //TODO: save then quit
+                            saveGameState(inputBuilder.substring(0, inputBuilder.length() - 2));
+                            return;
                         }
                     }
                 }
@@ -310,6 +322,43 @@ public class Engine {
         }
 
         return state[mouseX][mouseY];
+    }
+
+    private void saveGameState(String input) {
+        String saveFilePath = "save-file.txt";
+        File saveFile = new File(saveFilePath);
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(saveFile))) {
+            bw.write(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @source ChatGPT wrote the code for throwing an exception if there is no save file.
+     * @return
+     */
+    private String loadGameState() {
+        String saveFilePath = "save-file.txt";
+        File saveFile = new File(saveFilePath);
+        if (!saveFile.exists()) {
+            System.out.println("No save file found. Quitting.");
+            StdDraw.clear(Color.BLACK);
+            StdDraw.show();
+            return "";
+        }
+        StringBuilder gameState = null;
+        try (BufferedReader reader = new BufferedReader(new FileReader("save-file.txt"))) {
+            gameState = new StringBuilder();
+            int c;
+            while ((c = reader.read()) != -1) {
+                gameState.append((char) c);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return gameState.toString();
     }
 
     /**
