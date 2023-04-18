@@ -11,6 +11,7 @@ import edu.princeton.cs.algs4.StdDraw;
 import java.io.*;
 
 import java.awt.*;
+import java.util.HashSet;
 
 import static java.lang.Character.isDigit;
 
@@ -25,6 +26,7 @@ public class Engine {
     InputSource inputSource;
     private boolean menuTurn;
     public static boolean flowerDimension = false;
+    private boolean lineOfSightActive = false;
     private StringBuilder inputBuilder;
 
     /**
@@ -101,13 +103,20 @@ public class Engine {
                 TETile[][] loadWorld = startGame();
                 loadGame(loadWorld);
                 while (true) {
-                    // If the mouse has moved, update the HUD
                     TETile currentTile = getTileUnderMouse();
                     if (currentTile != null) {
-                        ter.renderFrame(state); // have to keep renderFrame() layering, any method for clearFrame()?
+                        ter.renderFrame(state);
                         renderHUD(currentTile);
                     }
                     if (inputSource.possibleNextInput()) {
+                        if (lineOfSightActive) {
+                            HashSet<Point> visibleTiles = getVisibleTiles(avatarPosition, 5);
+                            renderLineOfSight(loadWorld, avatarPosition, visibleTiles);
+                        } else {
+                            ter.renderFrame(loadWorld);
+                        }
+                        TETile currentTile2 = getTileUnderMouse();
+                        renderHUD(currentTile2);
                         char c2 = inputSource.getNextKey();
                         if (c2 == ':') {
                             if (inputSource.possibleNextInput()) {
@@ -118,6 +127,9 @@ public class Engine {
                                     break; //TODO: save then quit
                                 }
                             }
+                        }
+                        if (c2 == 'r' || c2 == 'R') {
+                            this.lineOfSightActive = !lineOfSightActive;
                         }
                         moveAvatar(c2);
                     }
@@ -228,7 +240,6 @@ public class Engine {
                 TETile[][] finalWorldFrame = initGenerator.getTiles();
                 return finalWorldFrame;
             } else if (isDigit(c)) {
-                System.out.println(c);
                 newSeed = newSeed + c;
                 StdDraw.setPenColor(Color.BLACK);
                 StdDraw.filledRectangle(this.WIDTH / 2, this.HEIGHT / 2 - 5, 50, 5);
@@ -253,6 +264,8 @@ public class Engine {
         this.state[startPosition.getX()][startPosition.getY()] = Tileset.AVATAR;
         ter.initialize(WIDTH, HEIGHT);
         ter.renderFrame(worldState);
+        TETile currentTile = getTileUnderMouse();
+        renderHUD(currentTile);
     }
 
     /**
@@ -306,8 +319,8 @@ public class Engine {
             avatarPosition.setY(newY);
             state[newX][newY] = Tileset.AVATAR;
             ter.renderFrame(state);
-            TETile currentTile = getTileUnderMouse(); // Get the tile under the mouse pointer
-            renderHUD(currentTile); // Render the HUD with the tile description
+            TETile currentTile = getTileUnderMouse();
+            renderHUD(currentTile);
         }
     }
 
@@ -325,7 +338,7 @@ public class Engine {
         Font font = new Font("Monaco", Font.BOLD, 20);
         StdDraw.setFont(font);
         StdDraw.text(textX, textY, "Current tile: " + tile.description());
-        StdDraw.text((WIDTH * 3) / 4, textY, "=^_^= WORLDS =^_^=");
+        StdDraw.text((WIDTH * 3) / 4, textY, "=^_^= R to toggle sight =^_^=");
         StdDraw.text(WIDTH / 4, textY, ":→Q to Quit");
         StdDraw.show();
     }
@@ -377,6 +390,38 @@ public class Engine {
             e.printStackTrace();
         }
         return gameState.toString();
+    }
+
+    public HashSet<Point> getVisibleTiles(Point avatarPosition, int radius) {
+        HashSet<Point> visibleTiles = new HashSet<>();
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                int distance = Math.abs(x) + Math.abs(y);
+                if (distance <= radius) {
+                    int tileX = avatarPosition.getX() + x;
+                    int tileY = avatarPosition.getY() + y;
+                    if (tileX >= 0 && tileX < WIDTH && tileY >= 0 && tileY < HEIGHT) {
+                        visibleTiles.add(new Point(tileX, tileY));
+                    }
+                }
+            }
+        }
+        return visibleTiles;
+    }
+
+    private void renderLineOfSight(TETile[][] world, Point avatarPosition, HashSet<Point> visibleTiles) {
+        TETile[][] maskedTiles = new TETile[world.length][world[0].length];
+        for (int x = 0; x < maskedTiles.length; x++) {
+            for (int y = 0; y < maskedTiles[0].length; y++) {
+                maskedTiles[x][y] = Tileset.NOTHING;
+            }
+        }
+        for (Point p : visibleTiles) {
+            int x = p.getX();
+            int y = p.getY();
+            maskedTiles[x][y] = world[x][y];
+        }
+        ter.renderFrame(maskedTiles);
     }
 
     /**
