@@ -97,9 +97,16 @@ public class Engine {
                 loadGame(loadWorld);
                 while (true) {
                     if (inputSource.possibleNextInput()) {
-                        char c2 = inputSource.getNextKey();
-                        if (c2 == 'q' || c2 == 'Q') {
-                            break;
+                        char c2 = inputSource.getNextKey(); //TODO: save and quit
+                        if (c2 == ':') {
+                            if (inputSource.possibleNextInput()) {
+                                char nextChar = inputSource.getNextKey();
+                                if (nextChar == 'q' || nextChar == 'Q') {
+                                    StdDraw.clear(Color.BLACK);
+                                    StdDraw.show();
+                                    break; //TODO: save then quit
+                                }
+                            }
                         }
                         moveAvatar(c2);
                     }
@@ -154,12 +161,12 @@ public class Engine {
                 if (c2 == ':') {
                     if (inputSource.possibleNextInput()) {
                         char nextChar = inputSource.getNextKey();
-                        if (nextChar == 'q' || nextChar == 'Q') { //TODO: adjust with :Q instead of Q
-                            break;
+                        if (nextChar == 'q' || nextChar == 'Q') {
+                            break; //TODO: save then quit
                         }
                     }
                 }
-                moveAvatar(c);
+                moveAvatar(c2);
             }
         } else if (c == 'l' || c == 'L') {
             loadGame(interactWithInputString(playerInputs));
@@ -180,7 +187,6 @@ public class Engine {
         while (this.inputSource.possibleNextInput()) {
             char c = this.inputSource.getNextKey();
             if (c == 's' || c == 'S' || newSeed.length() > 9) { // seed can't exceed 10 digits
-                System.out.println(newSeed);
                 WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, Long.parseLong(newSeed));
                 TETile[][] finalWorldFrame = initGenerator.getTiles();
                 return finalWorldFrame;
@@ -269,8 +275,8 @@ public class Engine {
      */
     public static void main(String[] args) {
         Engine engine = new Engine();
-        engine.interactWithInputString("n1swaddaw");
-        //engine.interactWithKeyboard();
+        //engine.interactWithInputString("n1swaddaw");
+        engine.interactWithKeyboard();
     }
 
 }
