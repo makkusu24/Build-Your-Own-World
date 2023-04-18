@@ -96,6 +96,12 @@ public class Engine {
                 TETile[][] loadWorld = startGame();
                 loadGame(loadWorld);
                 while (true) {
+                    // If the mouse has moved, update the HUD
+                    TETile currentTile = getTileUnderMouse();
+                    if (currentTile != null) {
+                        ter.renderFrame(state); // have to keep renderFrame() layering, any method for clearFrame()?
+                        renderHUD(currentTile);
+                    }
                     if (inputSource.possibleNextInput()) {
                         char c2 = inputSource.getNextKey(); //TODO: save and quit
                         if (c2 == ':') {
@@ -267,7 +273,41 @@ public class Engine {
             avatarPosition.setY(newY);
             state[newX][newY] = Tileset.AVATAR;
             ter.renderFrame(state);
+            TETile currentTile = getTileUnderMouse(); // Get the tile under the mouse pointer
+            renderHUD(currentTile); // Render the HUD with the tile description
         }
+    }
+
+    /**
+     * Method for interacting with mouse hovering to display tile names.
+     * @param tile gives us text that stays fixed above the game world as an HUD.
+     */
+    public void renderHUD(TETile tile) {
+        int textX = WIDTH / 2;
+        int textY = HEIGHT - 1;
+
+        StdDraw.setPenColor(Color.WHITE);
+        Font font = new Font("Monaco", Font.BOLD, 20);
+        StdDraw.setFont(font);
+        StdDraw.text(textX, textY, "Current tile: " + tile.description());
+        StdDraw.text((WIDTH * 3) / 4, textY, "=^_^= WORLDS =^_^=");
+        StdDraw.text(WIDTH / 4, textY, ":→Q to Quit");
+        StdDraw.show();
+    }
+
+    /**
+     * Used in loops that run while game is running to check what the mouse is interacting with.
+     * @return specific tile that the user's mouse is hovering over.
+     */
+    public TETile getTileUnderMouse() {
+        int mouseX = (int) StdDraw.mouseX();
+        int mouseY = (int) StdDraw.mouseY();
+
+        if (mouseX < 0 || mouseX >= WIDTH || mouseY < 0 || mouseY >= HEIGHT) {
+            return null;
+        }
+
+        return state[mouseX][mouseY];
     }
 
     /**
