@@ -364,6 +364,8 @@ public class Engine {
      * @param input indexed player inputs from either keyboard or string.
      */
     private void saveGameState(String input) {
+        System.out.println(input);
+        System.out.println("Running saveGameState()");
         String saveFilePath = "save-file.txt";
         File saveFile = new File(saveFilePath);
 
