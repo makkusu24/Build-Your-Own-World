@@ -20,7 +20,7 @@ public class Engine {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
-    private String playerInputs;
+    private String playerInputs; //TODO: possible infinite loop?
     private Point avatarPosition;
     private TETile[][] state;
     InputSource inputSource;
