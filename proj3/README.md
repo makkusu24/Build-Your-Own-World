@@ -35,6 +35,6 @@ Ambition score features:
 - (Secondary) MENU OPTION TO DETERMINE ENVIRONMENT (e.g., desert or ocean stage)
 
 ## PERSISTENCE
-- I HAVE AN IDEA: .txt file stores InputWithString() for save/load state --> all movements stored in a string -->
+- IDEA: .txt file stores InputWithString() for save/load state --> all movements stored in a string -->
   - ":Q"/save & quit -> store all inputs in a file and load game state from menu
   - Ex) save seed after loading world from interactWithKeyboard()
