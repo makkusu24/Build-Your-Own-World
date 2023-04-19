@@ -38,3 +38,12 @@ Ambition score features:
 - IDEA: .txt file stores InputWithString() for save/load state --> all movements stored in a string -->
   - ":Q"/save & quit -> store all inputs in a file and load game state from menu
   - Ex) save seed after loading world from interactWithKeyboard()
+
+
+
+- Issues with save/load state so far:
+  - I can artificially add seed + inputs into save-file.txt
+    -   -> doesn't actually generate TETile[][] to work from
+    - (1) methods aren't actually changing save-file.txt
+      - Yet still overrides manual seed + player inputs
+  - (2) 'L' from menu is returning only a static TETile[][] (?) -> can't interact with UI or world
