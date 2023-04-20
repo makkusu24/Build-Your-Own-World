@@ -20,7 +20,7 @@ public class Engine {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
-    private String playerInputs; //TODO: (1) overwriting manual seed + inputs in .txt; (2) manual -> static TETile[][]
+    private String playerInputs; //TODO: saving keyboard seed, not loading; not saving past n for string interaction; string interact not save-file.txt
     private Point avatarPosition;
     private TETile[][] state;
     InputSource inputSource;
@@ -71,8 +71,7 @@ public class Engine {
         this.inputSource = new StringInputDevice(input);
         this.inputBuilder = new StringBuilder();
         processInputString();
-        //return this.state;
-        return null;
+        return this.state;
     }
 
     /**
@@ -94,7 +93,7 @@ public class Engine {
         this.menuTurn = true;
         while (menuTurn) {
             char c = this.inputSource.getNextKey();
-            //this.playerInputs = this.playerInputs + c;
+            inputBuilder.append(c);
             drawMenu();
             if (c == 'n' || c == 'N') {
                 this.menuTurn = false;
@@ -118,7 +117,9 @@ public class Engine {
                         TETile currentTile2 = getTileUnderMouse();
                         renderHUD(currentTile2);
                         char c2 = inputSource.getNextKey();
+                        inputBuilder.append(c2);
                         if (c2 == ':') {
+                            System.out.println(inputBuilder);
                             if (inputSource.possibleNextInput()) {
                                 char nextChar = inputSource.getNextKey();
                                 if (nextChar == 'q' || nextChar == 'Q') {
@@ -139,6 +140,7 @@ public class Engine {
             } else if (c == 'l' || c == 'L') {
                 this.menuTurn = false;
                 String loadedInput = loadGameState();
+                System.out.println(loadedInput);
                 if (!loadedInput.isEmpty()) {
                     loadGame(interactWithInputString(loadedInput));
                 }
@@ -180,12 +182,15 @@ public class Engine {
      */
     public void processInputString() {
         char c = this.inputSource.getNextKey();
+        System.out.println(c);
         inputBuilder.append(c);
+        System.out.println(inputBuilder);
         if (c == 'n' || c == 'N') {
             TETile[][] loadWorld = startGame();
             loadGame(loadWorld);
             while (inputSource.possibleNextInput()) {
                 char c2 = inputSource.getNextKey();
+                System.out.println(c2);
                 inputBuilder.append(c2);
                 if (c2 == ':') {
                     if (inputSource.possibleNextInput()) {
@@ -220,6 +225,7 @@ public class Engine {
         StdDraw.show();
         while (this.inputSource.possibleNextInput()) {
             char c = this.inputSource.getNextKey();
+            inputBuilder.append(c);
             if (c == 's' || c == 'S' || newSeed.length() > 9) { // seed can't exceed 10 digits
                 StdDraw.clear(Color.BLACK);
                 StdDraw.setPenColor(Color.WHITE);
@@ -229,6 +235,7 @@ public class Engine {
                 StdDraw.show();
                 while (this.inputSource.possibleNextInput()) {
                     char c2 = this.inputSource.getNextKey();
+                    inputBuilder.append(c2);
                     if (c2 == 'e' || c2 == 'E') {
                         this.flowerDimension = true;
                         break;
@@ -450,8 +457,8 @@ public class Engine {
      */
     public static void main(String[] args) {
         Engine engine = new Engine();
-        //engine.interactWithInputString("n1swaddaw");
-        engine.interactWithKeyboard();
+        engine.interactWithInputString("n1swaddaw:QLdd");
+        //engine.interactWithKeyboard();
     }
 
 }
