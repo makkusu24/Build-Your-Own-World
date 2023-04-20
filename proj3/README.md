@@ -47,3 +47,5 @@ Ambition score features:
     - (1) methods aren't actually changing save-file.txt
       - Yet still overrides manual seed + player inputs
   - (2) 'L' from menu is returning only a static TETile[][] (?) -> can't interact with UI or world
+
+saving keyboard seed, not loading; not saving past n for string interaction; string interact not save-file.txt

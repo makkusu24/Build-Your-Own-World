@@ -20,7 +20,7 @@ public class Engine {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
-    private String playerInputs; //TODO: saving keyboard seed, not loading; not saving past n for string interaction; string interact not save-file.txt
+    private String playerInputs;
     private Point avatarPosition;
     private TETile[][] state;
     InputSource inputSource;
@@ -28,6 +28,12 @@ public class Engine {
     static boolean flowerDimension = false;
     private boolean lineOfSightActive = false;
     private StringBuilder inputBuilder;
+
+    private static final int MAGICNUMBER10 = 10;
+    private static final int MAGICNUMBER16 = 16;
+    private static final int MAGICNUMBER20 = 20;
+    private static final int MAGICNUMBER30 = 30;
+    private static final int MAGICNUMBER50 = 50;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -81,8 +87,8 @@ public class Engine {
      * 'q' quits
      */
     public void startMenu() {
-        StdDraw.setCanvasSize(this.WIDTH * 16, this.HEIGHT * 16);
-        Font font = new Font("Monaco", Font.BOLD, 30);
+        StdDraw.setCanvasSize(this.WIDTH * MAGICNUMBER16, this.HEIGHT * MAGICNUMBER16);
+        Font font = new Font("Monaco", Font.BOLD, MAGICNUMBER30);
         StdDraw.setFont(font);
         StdDraw.setXscale(0, this.WIDTH);
         StdDraw.setYscale(0, this.HEIGHT);
@@ -158,14 +164,14 @@ public class Engine {
     public void drawMenu() {
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
-        Font fontBig = new Font("Monaco", Font.BOLD, 30);
+        Font fontBig = new Font("Monaco", Font.BOLD, MAGICNUMBER30);
         StdDraw.setFont(fontBig);
-        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2 + 10, "Create World (N)");
+        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2 + MAGICNUMBER10, "Create World (N)");
         StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2, "Load World (L)");
-        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2 - 10, "Quit (Q)");
+        StdDraw.text(this.WIDTH / 2, this.HEIGHT / 2 - MAGICNUMBER10, "Quit (Q)");
 
         if (menuTurn) {
-            Font fontSmall = new Font("Monaco", Font.BOLD, 20);
+            Font fontSmall = new Font("Monaco", Font.BOLD, MAGICNUMBER20);
             StdDraw.setFont(fontSmall);
             StdDraw.line(0, this.HEIGHT - 2, this.WIDTH, this.HEIGHT - 2);
             StdDraw.textLeft(0, this.HEIGHT - 1, "61B Sp'23");
@@ -219,7 +225,7 @@ public class Engine {
     public TETile[][] startGame() {
         String newSeed = "";
         StdDraw.setPenColor(Color.WHITE);
-        Font font = new Font("Monaco", Font.BOLD, 30);
+        Font font = new Font("Monaco", Font.BOLD, MAGICNUMBER30);
         StdDraw.setFont(font);
         StdDraw.text(this.WIDTH / 2 + 3, this.HEIGHT / 2 + 3, "Enter seed:");
         StdDraw.show();
@@ -229,7 +235,7 @@ public class Engine {
             if (c == 's' || c == 'S' || newSeed.length() > 9) { // seed can't exceed 10 digits
                 StdDraw.clear(Color.BLACK);
                 StdDraw.setPenColor(Color.WHITE);
-                Font font2 = new Font("Monaco", Font.BOLD, 30);
+                Font font2 = new Font("Monaco", Font.BOLD, MAGICNUMBER30);
                 StdDraw.setFont(font2);
                 StdDraw.text(this.WIDTH / 2 + 3, this.HEIGHT / 2 + 3, "(E) for flower biome, (S) for default biome");
                 StdDraw.show();
@@ -250,7 +256,7 @@ public class Engine {
             } else if (isDigit(c)) {
                 newSeed = newSeed + c;
                 StdDraw.setPenColor(Color.BLACK);
-                StdDraw.filledRectangle(this.WIDTH / 2, this.HEIGHT / 2 - 5, 50, 5);
+                StdDraw.filledRectangle(this.WIDTH / 2, this.HEIGHT / 2 - 5, MAGICNUMBER50, 5);
                 StdDraw.setPenColor(Color.WHITE);
                 StdDraw.text(this.WIDTH / 2 + 3, this.HEIGHT / 2 - 5, newSeed);
                 StdDraw.show();
@@ -343,7 +349,7 @@ public class Engine {
         int textY = HEIGHT - 1;
 
         StdDraw.setPenColor(Color.WHITE);
-        Font font = new Font("Monaco", Font.BOLD, 20);
+        Font font = new Font("Monaco", Font.BOLD, MAGICNUMBER20);
         StdDraw.setFont(font);
         StdDraw.text(textX, textY, "Current tile: " + tile.description());
         StdDraw.text((WIDTH * 3) / 4, textY, "=^_^= R to toggle sight =^_^=");
