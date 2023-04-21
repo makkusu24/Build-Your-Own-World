@@ -500,7 +500,6 @@ public class Engine {
      * Main method for debugging between interactWithInputString() and interactWithKeyboard()
      */
     public static void main(String[] args) {
-        //TODO: interactWithInputString() still not making save-file.txt
         Engine engine = new Engine();
         //engine.interactWithInputString("n1swaddaw:QLdd");
         engine.interactWithKeyboard();
