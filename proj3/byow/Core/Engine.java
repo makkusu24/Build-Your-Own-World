@@ -215,6 +215,7 @@ public class Engine {
                 loadGame(interactWithInputString(loadedInput));
             }
         } //TODO: once out of characters to parse -> interactable TETile() [boilerplate startMenu()?]
+        //TODO: I HAVE AN IDEA ==>> RECONDENSE METHODS FOR INPUTSTRING AND KEYBOARD -> "replays moves in real time"
     }
 
     /**
@@ -462,6 +463,7 @@ public class Engine {
      */
     public static void main(String[] args) { //TODO: static TETile[][] from interactWithInputString() (non-interactable)
         //TODO: load string not processing ":ql" properly -> halted motion afterwards
+        //TODO: Autograder fails because '==' false when "GHOST AVATAR" left behind after loading
         Engine engine = new Engine();
         //engine.interactWithInputString("n1swaddaw:QLdd");
         engine.interactWithKeyboard();
