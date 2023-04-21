@@ -125,11 +125,10 @@ public class Engine {
                         char c2 = inputSource.getNextKey();
                         inputBuilder.append(c2);
                         if (c2 == ':') {
-                            System.out.println(inputBuilder);
                             if (inputSource.possibleNextInput()) {
                                 char nextChar = inputSource.getNextKey();
                                 if (nextChar == 'q' || nextChar == 'Q') {
-                                    saveGameState(inputBuilder.toString());
+                                    saveGameState(inputBuilder.substring(0, inputBuilder.length() - 1).toString());
                                     StdDraw.clear(Color.BLACK);
                                     StdDraw.show();
                                     break;
@@ -463,8 +462,8 @@ public class Engine {
      */
     public static void main(String[] args) {
         Engine engine = new Engine();
-        engine.interactWithInputString("n1swaddaw:QLdd");
-        //engine.interactWithKeyboard();
+        //engine.interactWithInputString("n1swaddaw:QLdd");
+        engine.interactWithKeyboard();
     }
 
 }
