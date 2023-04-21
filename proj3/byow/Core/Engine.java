@@ -1,19 +1,19 @@
 package byow.Core;
 
-import byow.InputDemo.InputSource;
-import byow.InputDemo.KeyboardInputSource;
-import byow.InputDemo.StringInputDevice;
-import byow.TileEngine.TERenderer;
-import byow.TileEngine.TETile;
-import byow.TileEngine.Tileset;
-import edu.princeton.cs.algs4.StdDraw;
+        import byow.InputDemo.InputSource;
+        import byow.InputDemo.KeyboardInputSource;
+        import byow.InputDemo.StringInputDevice;
+        import byow.TileEngine.TERenderer;
+        import byow.TileEngine.TETile;
+        import byow.TileEngine.Tileset;
+        import edu.princeton.cs.algs4.StdDraw;
 
-import java.io.*;
+        import java.io.*;
 
-import java.awt.*;
-import java.util.HashSet;
+        import java.awt.*;
+        import java.util.HashSet;
 
-import static java.lang.Character.isDigit;
+        import static java.lang.Character.isDigit;
 
 public class Engine {
     TERenderer ter = new TERenderer();
@@ -201,8 +201,8 @@ public class Engine {
                     if (inputSource.possibleNextInput()) {
                         char nextChar = inputSource.getNextKey();
                         if (nextChar == 'q' || nextChar == 'Q') {
-                            saveGameState(inputBuilder.substring(0, inputBuilder.length() - 2));
-                            return;
+                            inputBuilder.setLength(inputBuilder.length() - 2);
+                            break;
                         }
                     }
                 }
@@ -248,6 +248,8 @@ public class Engine {
                     moveAvatar(c2);
                 }
             }
+            // Save the game state after processing all inputs
+            saveGameState(inputBuilder.toString());
         } else if (c == 'l' || c == 'L') {
             String loadedInput = loadGameState();
             if (!loadedInput.isEmpty()) {
@@ -500,10 +502,9 @@ public class Engine {
      * Main method for debugging between interactWithInputString() and interactWithKeyboard()
      */
     public static void main(String[] args) {
-        //TODO: interactWithInputString() still not making save-file.txt (or rather, saving state)
         Engine engine = new Engine();
-        //engine.interactWithInputString("n1swaddaw:QLdd");
-        engine.interactWithKeyboard();
+        engine.interactWithInputString("n040302sedwdddddddddd:QLsssdddd");
+        //engine.interactWithKeyboard();
     }
 
 }
