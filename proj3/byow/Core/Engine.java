@@ -358,7 +358,7 @@ public class Engine {
             case 'D':
                 newX += 1;
                 break;
-            default: //completes style
+            default:
                 break;
         }
 
@@ -497,11 +497,11 @@ public class Engine {
      * Main method for debugging between interactWithInputString() and interactWithKeyboard()
      */
     public static void main(String[] args) {
-        //TODO: load string not processing ":ql" properly -> halted motion afterwards
+        //TODO: interactWithInputString() still not making save-file.txt
         //TODO: Autograder fails because '==' false when "GHOST AVATAR" left behind after loading
         Engine engine = new Engine();
-        //engine.interactWithInputString("n1swaddaw:QLdd");
-        engine.interactWithKeyboard();
+        engine.interactWithInputString("n1swaddaw:QLdd");
+        //engine.interactWithKeyboard();
     }
 
 }
