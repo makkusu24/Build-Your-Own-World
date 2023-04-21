@@ -462,7 +462,8 @@ public class Engine {
     /**
      * Main method for debugging between interactWithInputString() and interactWithKeyboard()
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) { //TODO: static TETile[][] from interactWithInputString() (non-interactable)
+        //TODO: load string not processing ":ql" properly -> halted motion afterwards
         Engine engine = new Engine();
         //engine.interactWithInputString("n1swaddaw:QLdd");
         engine.interactWithKeyboard();
