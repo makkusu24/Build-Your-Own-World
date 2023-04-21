@@ -1,19 +1,16 @@
 package byow.Core;
 
-        import byow.InputDemo.InputSource;
-        import byow.InputDemo.KeyboardInputSource;
-        import byow.InputDemo.StringInputDevice;
-        import byow.TileEngine.TERenderer;
-        import byow.TileEngine.TETile;
-        import byow.TileEngine.Tileset;
-        import edu.princeton.cs.algs4.StdDraw;
-
-        import java.io.*;
-
-        import java.awt.*;
-        import java.util.HashSet;
-
-        import static java.lang.Character.isDigit;
+import byow.InputDemo.InputSource;
+import byow.InputDemo.KeyboardInputSource;
+import byow.InputDemo.StringInputDevice;
+import byow.TileEngine.TERenderer;
+import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
+import edu.princeton.cs.algs4.StdDraw;
+import java.io.*;
+import java.awt.*;
+import java.util.HashSet;
+import static java.lang.Character.isDigit;
 
 public class Engine {
     TERenderer ter = new TERenderer();
@@ -197,6 +194,15 @@ public class Engine {
                 char c2 = inputSource.getNextKey();
                 System.out.println(c2);
                 inputBuilder.append(c2);
+                if (c2 == ':') {
+                    if (inputSource.possibleNextInput()) {
+                        char nextChar = inputSource.getNextKey();
+                        if (nextChar == 'q' || nextChar == 'Q') {
+                            saveGameState(inputBuilder.substring(0, inputBuilder.length() - 2));
+                            return;
+                        }
+                    }
+                }
                 moveAvatar(c2);
             }
             while (true) {
@@ -265,6 +271,25 @@ public class Engine {
             char c = this.inputSource.getNextKey();
             inputBuilder.append(c);
             if (c == 's' || c == 'S' || newSeed.length() > 9) { // seed can't exceed 10 digits
+            /**
+                StdDraw.clear(Color.BLACK);
+                StdDraw.setPenColor(Color.WHITE);
+                Font font2 = new Font("Monaco", Font.BOLD, MAGICNUMBER30);
+                StdDraw.setFont(font2);
+                StdDraw.text(this.WIDTH / 2 + 3, this.HEIGHT / 2 + 3, "(E) for flower biome, (S) for default biome");
+                StdDraw.show();
+                while (this.inputSource.possibleNextInput()) {
+                    char c2 = this.inputSource.getNextKey();
+                    inputBuilder.append(c2);
+                    if (c2 == 'e' || c2 == 'E') {
+                        this.flowerDimension = true;
+                        break;
+                    } else if (c2 == 's' || c2 == 'S') {
+                        this.flowerDimension = false;
+                        break;
+                    }
+                }
+                 */
                 WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, Long.parseLong(newSeed));
                 TETile[][] finalWorldFrame = initGenerator.getTiles();
                 return finalWorldFrame;
