@@ -271,7 +271,7 @@ public class Engine {
             char c = this.inputSource.getNextKey();
             inputBuilder.append(c);
             if (c == 's' || c == 'S' || newSeed.length() > 9) { // seed can't exceed 10 digits
-            /**
+                /**
                 StdDraw.clear(Color.BLACK);
                 StdDraw.setPenColor(Color.WHITE);
                 Font font2 = new Font("Monaco", Font.BOLD, MAGICNUMBER30);
