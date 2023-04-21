@@ -194,14 +194,6 @@ public class Engine {
                 char c2 = inputSource.getNextKey();
                 System.out.println(c2);
                 inputBuilder.append(c2);
-                if (c2 == ':') {
-                    if (inputSource.possibleNextInput()) {
-                        char nextChar = inputSource.getNextKey();
-                        if (nextChar == 'q' || nextChar == 'Q') {
-                            saveGameState(inputBuilder.substring(0, inputBuilder.length() - 2));
-                        }
-                    }
-                }
                 moveAvatar(c2);
             }
             /**
