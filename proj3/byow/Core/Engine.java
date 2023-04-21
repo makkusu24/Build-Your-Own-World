@@ -265,23 +265,6 @@ public class Engine {
             char c = this.inputSource.getNextKey();
             inputBuilder.append(c);
             if (c == 's' || c == 'S' || newSeed.length() > 9) { // seed can't exceed 10 digits
-                StdDraw.clear(Color.BLACK);
-                StdDraw.setPenColor(Color.WHITE);
-                Font font2 = new Font("Monaco", Font.BOLD, MAGICNUMBER30);
-                StdDraw.setFont(font2);
-                StdDraw.text(this.WIDTH / 2 + 3, this.HEIGHT / 2 + 3, "(E) for flower biome, (S) for default biome");
-                StdDraw.show();
-                while (this.inputSource.possibleNextInput()) {
-                    char c2 = this.inputSource.getNextKey();
-                    inputBuilder.append(c2);
-                    if (c2 == 'e' || c2 == 'E') {
-                        this.flowerDimension = true;
-                        break;
-                    } else if (c2 == 's' || c2 == 'S') {
-                        this.flowerDimension = false;
-                        break;
-                    }
-                }
                 WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, Long.parseLong(newSeed));
                 TETile[][] finalWorldFrame = initGenerator.getTiles();
                 return finalWorldFrame;
