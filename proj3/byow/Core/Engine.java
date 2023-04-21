@@ -214,7 +214,7 @@ public class Engine {
                 this.playerInputs = loadedInput;
                 loadGame(interactWithInputString(loadedInput));
             }
-        }
+        } //TODO: once out of characters to parse -> interactable TETile() [boilerplate startMenu()?]
     }
 
     /**
@@ -232,7 +232,6 @@ public class Engine {
             char c = this.inputSource.getNextKey();
             inputBuilder.append(c);
             if (c == 's' || c == 'S' || newSeed.length() > 9) { // seed can't exceed 10 digits
-                /**
                 StdDraw.clear(Color.BLACK);
                 StdDraw.setPenColor(Color.WHITE);
                 Font font2 = new Font("Monaco", Font.BOLD, MAGICNUMBER30);
@@ -250,7 +249,6 @@ public class Engine {
                         break;
                     }
                 }
-                 */
                 WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, Long.parseLong(newSeed));
                 TETile[][] finalWorldFrame = initGenerator.getTiles();
                 return finalWorldFrame;
