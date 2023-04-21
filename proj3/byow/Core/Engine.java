@@ -208,6 +208,42 @@ public class Engine {
                 }
                 moveAvatar(c2);
             }
+            while (true) {
+                this.inputSource = new KeyboardInputSource();
+                System.out.println("transition inputString() -> keyboard");
+                TETile currentTile = getTileUnderMouse();
+                if (currentTile != null) {
+                    ter.renderFrame(state);
+                    renderHUD(currentTile);
+                }
+                if (inputSource.possibleNextInput()) {
+                    if (lineOfSightActive) {
+                        HashSet<Point> visibleTiles = getVisibleTiles(avatarPosition, 5);
+                        renderLineOfSight(loadWorld, visibleTiles);
+                    } else {
+                        ter.renderFrame(loadWorld);
+                    }
+                    TETile currentTile2 = getTileUnderMouse();
+                    renderHUD(currentTile2);
+                    char c2 = inputSource.getNextKey();
+                    inputBuilder.append(c2);
+                    if (c2 == ':') {
+                        if (inputSource.possibleNextInput()) {
+                            char nextChar = inputSource.getNextKey();
+                            if (nextChar == 'q' || nextChar == 'Q') {
+                                saveGameState(inputBuilder.substring(0, inputBuilder.length() - 1).toString());
+                                StdDraw.clear(Color.BLACK);
+                                StdDraw.show();
+                                break;
+                            }
+                        }
+                    }
+                    if (c2 == 'r' || c2 == 'R') {
+                        this.lineOfSightActive = !lineOfSightActive;
+                    }
+                    moveAvatar(c2);
+                }
+            }
         } else if (c == 'l' || c == 'L') {
             String loadedInput = loadGameState();
             if (!loadedInput.isEmpty()) {
