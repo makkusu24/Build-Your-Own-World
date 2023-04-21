@@ -205,6 +205,7 @@ public class Engine {
                 }
                 moveAvatar(c2);
             }
+            /**
             while (true) {
                 Point ghostAvatar = findEmptyTile(state);
                 if (loadWorld[ghostAvatar.getX()][ghostAvatar.getY()] == Tileset.AVATAR) {
@@ -245,7 +246,7 @@ public class Engine {
                     moveAvatar(c2);
                 }
             }
-            // Save the game state after processing all inputs
+             */
             saveGameState(inputBuilder.toString());
         } else if (c == 'l' || c == 'L') {
             String loadedInput = loadGameState();
