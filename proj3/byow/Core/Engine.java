@@ -199,7 +199,6 @@ public class Engine {
                         char nextChar = inputSource.getNextKey();
                         if (nextChar == 'q' || nextChar == 'Q') {
                             saveGameState(inputBuilder.substring(0, inputBuilder.length() - 2));
-                            return;
                         }
                     }
                 }
