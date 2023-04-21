@@ -49,3 +49,7 @@ Ambition score features:
   - (2) 'L' from menu is returning only a static TETile[][] (?) -> can't interact with UI or world
 
 saving keyboard seed, not loading; not saving past n for string interaction; string interact not save-file.txt
+
+<===> FINAL STRETCH OF FIXES TO IMPLEMENT <===>
+//TODO: interactWithInputString() still not making save-file.txt
+//TODO: Autograder fails because '==' false when "GHOST AVATAR" left behind after loading
