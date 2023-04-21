@@ -209,6 +209,10 @@ public class Engine {
                 moveAvatar(c2);
             }
             while (true) {
+                Point ghostAvatar = findEmptyTile(state);
+                if (loadWorld[ghostAvatar.getX()][ghostAvatar.getY()] == Tileset.AVATAR) {
+                    loadWorld[ghostAvatar.getX()][ghostAvatar.getY()] = Tileset.FLOOR;
+                }
                 this.inputSource = new KeyboardInputSource();
                 System.out.println("transition inputString() -> keyboard");
                 TETile currentTile = getTileUnderMouse();
@@ -416,7 +420,6 @@ public class Engine {
         System.out.println("Running saveGameState()");
         String saveFilePath = "save-file.txt";
         File saveFile = new File(saveFilePath);
-
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(saveFile))) {
             bw.write(input);
         } catch (IOException e) {
@@ -498,10 +501,9 @@ public class Engine {
      */
     public static void main(String[] args) {
         //TODO: interactWithInputString() still not making save-file.txt
-        //TODO: Autograder fails because '==' false when "GHOST AVATAR" left behind after loading
         Engine engine = new Engine();
-        engine.interactWithInputString("n1swaddaw:QLdd");
-        //engine.interactWithKeyboard();
+        //engine.interactWithInputString("n1swaddaw:QLdd");
+        engine.interactWithKeyboard();
     }
 
 }
