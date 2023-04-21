@@ -250,8 +250,7 @@ public class Engine {
                 this.playerInputs = loadedInput;
                 loadGame(interactWithInputString(loadedInput));
             }
-        } //TODO: once out of characters to parse -> interactable TETile() [boilerplate startMenu()?]
-        //TODO: I HAVE AN IDEA ==>> RECONDENSE METHODS FOR INPUTSTRING AND KEYBOARD -> "replays moves in real time"
+        }
     }
 
     /**
@@ -497,7 +496,7 @@ public class Engine {
     /**
      * Main method for debugging between interactWithInputString() and interactWithKeyboard()
      */
-    public static void main(String[] args) { //TODO: static TETile[][] from interactWithInputString() (non-interactable)
+    public static void main(String[] args) {
         //TODO: load string not processing ":ql" properly -> halted motion afterwards
         //TODO: Autograder fails because '==' false when "GHOST AVATAR" left behind after loading
         Engine engine = new Engine();
