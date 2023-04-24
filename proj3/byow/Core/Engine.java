@@ -7,9 +7,12 @@ import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.algs4.StdDraw;
+
 import java.io.*;
+
 import java.awt.*;
 import java.util.HashSet;
+
 import static java.lang.Character.isDigit;
 
 public class Engine {
@@ -194,9 +197,17 @@ public class Engine {
                 char c2 = inputSource.getNextKey();
                 System.out.println(c2);
                 inputBuilder.append(c2);
+                if (c2 == ':') {
+                    if (inputSource.possibleNextInput()) {
+                        char nextChar = inputSource.getNextKey();
+                        if (nextChar == 'q' || nextChar == 'Q') {
+                            saveGameState(inputBuilder.substring(0, inputBuilder.length() - 2));
+                            return;
+                        }
+                    }
+                }
                 moveAvatar(c2);
             }
-            /**
             while (true) {
                 Point ghostAvatar = findEmptyTile(state);
                 if (loadWorld[ghostAvatar.getX()][ghostAvatar.getY()] == Tileset.AVATAR) {
@@ -237,8 +248,6 @@ public class Engine {
                     moveAvatar(c2);
                 }
             }
-             */
-            saveGameState(inputBuilder.toString());
         } else if (c == 'l' || c == 'L') {
             String loadedInput = loadGameState();
             if (!loadedInput.isEmpty()) {
@@ -263,7 +272,6 @@ public class Engine {
             char c = this.inputSource.getNextKey();
             inputBuilder.append(c);
             if (c == 's' || c == 'S' || newSeed.length() > 9) { // seed can't exceed 10 digits
-                /**
                 StdDraw.clear(Color.BLACK);
                 StdDraw.setPenColor(Color.WHITE);
                 Font font2 = new Font("Monaco", Font.BOLD, MAGICNUMBER30);
@@ -281,7 +289,6 @@ public class Engine {
                         break;
                     }
                 }
-                 */
                 WorldGenerator initGenerator = new WorldGenerator(WIDTH, HEIGHT, Long.parseLong(newSeed));
                 TETile[][] finalWorldFrame = initGenerator.getTiles();
                 return finalWorldFrame;
@@ -494,8 +501,8 @@ public class Engine {
      */
     public static void main(String[] args) {
         Engine engine = new Engine();
-        engine.interactWithInputString("n040302sedwdddddddddd:QLsssdddd");
-        //engine.interactWithKeyboard();
+        //engine.interactWithInputString("n1swaddaw:QLdd");
+        engine.interactWithKeyboard();
     }
 
 }
